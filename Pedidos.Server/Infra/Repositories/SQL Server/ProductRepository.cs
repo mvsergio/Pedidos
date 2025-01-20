@@ -4,23 +4,22 @@ using Pedidos.Server.Infra.Data;
 
 namespace Pedidos.Server.Infra.Repositories.SqlServer
 {
-    public class ProductRepository : IProductRepository
+    public class ProductRepository(ApplicationDbContext context) : IProductRepository
     {
-        private readonly ApplicationDbContext _context;
-
-        public ProductRepository(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+        private readonly ApplicationDbContext _context = context;
 
         public async Task<List<Product>> GetAllAsync()
         {
-            return await _context.Products.ToListAsync();
+            return await _context
+                        .Products
+                        .ToListAsync();
         }
 
         public async Task<Product?> GetByIdAsync(int id)
         {
-            return await _context.Products.FindAsync(id);
+            return await _context
+                        .Products
+                        .FindAsync(id);
         }
 
         public async Task<Product> CreateAsync(Product product)

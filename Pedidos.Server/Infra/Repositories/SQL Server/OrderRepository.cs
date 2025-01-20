@@ -37,11 +37,11 @@ namespace Pedidos.Server.Infra.Repositories.SqlServer
             await _context.SaveChangesAsync();
 
             // Trigger event for synchronization
-            var orderCreatedEvent = new OrderCreatedEvent(order.Id);
-            await _orderCreatedEventHandler.Handle(orderCreatedEvent);
+            await _orderCreatedEventHandler.Handle(order);
 
             return order;
         }
+
 
         public async Task<Order> UpdateAsync(Order order)
         {

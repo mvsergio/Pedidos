@@ -7,6 +7,6 @@
         public DateTime OrderDate { get; set; }
         public decimal TotalAmount { get; set; }
         public required string Status { get; set; } // Enum as string for simplicity
-        public List<OrderItem> Items { get; set; } = new();
+        public List<OrderItem> Items { get; set; } = [];
     }
 }

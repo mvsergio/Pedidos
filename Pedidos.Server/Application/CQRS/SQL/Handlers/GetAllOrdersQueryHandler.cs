@@ -4,16 +4,11 @@ using Pedidos.Server.Infra.Repositories.SqlServer;
 
 namespace Pedidos.Server.Application.CQRS.SQL.Handlers
 {
-    public class GetAllOrdersQueryHandler
+    public class GetAllOrdersQueryHandler(IOrderRepository orderRepository)
     {
-        private readonly IOrderRepository _orderRepository;
+        private readonly IOrderRepository _orderRepository = orderRepository;
 
-        public GetAllOrdersQueryHandler(IOrderRepository orderRepository)
-        {
-            _orderRepository = orderRepository;
-        }
-
-        public async Task<List<Order>> Handle(GetAllOrdersQuery query)
+        public async Task<List<Order>> Handle()
         {
             return await _orderRepository.GetAllAsync();
         }

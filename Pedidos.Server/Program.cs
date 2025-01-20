@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using MongoDB.Driver;
 using Pedidos.Server.Application.CQRS.EventHandler;
 using Pedidos.Server.Application.CQRS.NoSQL.Handles;
 using Pedidos.Server.Application.CQRS.SQL.Handlers;
@@ -25,6 +27,8 @@ namespace Pedidos.Server
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
             // MongoDB
+            // builder.Services.AddSingleton<IMongoClient, MongoClient>(s => new MongoClient(builder.Configuration.GetConnectionString("MongoDb")));
+
             builder.Services.AddSingleton<IMongoDbContext, MongoDbContext>();
             builder.Services.AddScoped<IMongoOrderRepository, MongoOrderRepository>();
 
@@ -32,9 +36,10 @@ namespace Pedidos.Server
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(Program).Assembly));
+
             // CQRS - sql
             builder.Services.AddScoped<CreateOrderCommandHandler>();
-            builder.Services.AddScoped<GetOrderByIdQueryHandler>();
             builder.Services.AddScoped<GetAllOrdersQueryHandler>();
 
             // CQRS - nosql

@@ -6,7 +6,7 @@ namespace Pedidos.Server.Infra.Repositories.SqlServer
     {
         Task<List<Order>> GetAllAsync();
         Task<Order?> GetByIdAsync(int id);
-        Task<Order> CreateAsync(Order order);
+        Task<Order> CreateAsync(Order orderDto);
         Task DeleteAsync(int id);
         Task<Order> UpdateAsync(Order order);
     }

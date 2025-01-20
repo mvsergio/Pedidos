@@ -10,10 +10,10 @@ namespace Pedidos.Server.Application.CQRS.EventHandler
         private readonly IOrderRepository _orderRepository = orderRepository;
         private readonly IMongoDbContext _mongoDbContext = mongoDbContext;
 
-        public async Task Handle(OrderCreatedEvent orderCreatedEvent)
+        public async Task Handle(Order orderCreatedEvent)
         {
             // Get the order from SQL Server
-            var order = await _orderRepository.GetByIdAsync(orderCreatedEvent.OrderId);
+            var order = await _orderRepository.GetByIdAsync(orderCreatedEvent.Id);
 
             if (order != null)
             {

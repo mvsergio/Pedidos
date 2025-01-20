@@ -3,14 +3,9 @@ using Pedidos.Server.Infra.Repositories.SqlServer;
 
 namespace Pedidos.Server.Application.Service
 {
-    public class ProductService : IProductService
+    public class ProductService(IProductRepository productRepository) : IProductService
     {
-        private readonly IProductRepository _productRepository;
-
-        public ProductService(IProductRepository productRepository)
-        {
-            _productRepository = productRepository;
-        }
+        private readonly IProductRepository _productRepository = productRepository;
 
         public async Task<List<Product>> GetAllProductsAsync()
         {
