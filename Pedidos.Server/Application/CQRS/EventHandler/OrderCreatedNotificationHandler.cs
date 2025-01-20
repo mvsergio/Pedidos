@@ -2,18 +2,13 @@
 using MongoDB.Driver;
 using Pedidos.Server.Application.CQRS.Notification;
 using Pedidos.Server.Domain.Entities;
+using Pedidos.Server.Infra.Repositories.MongoDB;
 
 namespace Pedidos.Server.Application.CQRS.EventHandler
 {
-    public class OrderCreatedNotificationHandler : INotificationHandler<OrderCreatedNotification>
+    public class OrderCreatedNotificationHandler(IMongoOrderRepository mongoOrderRepository) : INotificationHandler<OrderCreatedNotification>
     {
-        private readonly IMongoCollection<Order> _mongoCollection;
-
-        public OrderCreatedNotificationHandler(IMongoClient mongoClient)
-        {
-            var database = mongoClient.GetDatabase("OrdersDB");
-            _mongoCollection = database.GetCollection<Order>("Orders");
-        }
+        private readonly IMongoOrderRepository _mongoOrderRepository = mongoOrderRepository;
 
         public async Task Handle(OrderCreatedNotification notification, CancellationToken cancellationToken)
         {
@@ -25,8 +20,7 @@ namespace Pedidos.Server.Application.CQRS.EventHandler
                 Status = notification.Status,
                 OrderDate = DateTime.UtcNow
             };
-
-            await _mongoCollection.InsertOneAsync(order, cancellationToken: cancellationToken);
+            await _mongoOrderRepository.SaveOrderAsync(order);
         }
     }
 }

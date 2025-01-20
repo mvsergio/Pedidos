@@ -19,7 +19,6 @@ namespace Pedidos.Server.Application.Service
 
         public async Task<Product> CreateProductAsync(Product product)
         {
-            // Regras de negócio para validação do produto podem ser aplicadas aqui
             return await _productRepository.CreateAsync(product);
         }
 

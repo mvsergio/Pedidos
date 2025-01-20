@@ -1,6 +1,10 @@
+using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Pedidos.Server.Application.CQRS.EventHandler;
 using Pedidos.Server.Application.CQRS.SQL.Handlers;
+using Pedidos.Server.Application.CQRS.SQL.Queries;
 using Pedidos.Server.Application.Service;
+using Pedidos.Server.Domain.Entities;
 using Pedidos.Server.Infra.Data;
 using Pedidos.Server.Infra.Data.MongoDB;
 using Pedidos.Server.Infra.Repositories.MongoDB;
@@ -36,6 +40,8 @@ namespace Pedidos.Server
             builder.Services.AddScoped<CreateOrderCommandHandler>();
             builder.Services.AddScoped<GetAllOrdersQueryHandler>();
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+            builder.Services.AddScoped<OrderCreatedNotificationHandler>();
+            builder.Services.AddScoped<OrderDeleteddNotificationHandler>();
 
             var app = builder.Build();
 
@@ -51,27 +57,61 @@ namespace Pedidos.Server
 
             app.UseHttpsRedirection();
 
-            app.UseAuthorization();
+            // app.UseAuthorization();
 
-            //var summaries = new[]
-            //{
-            //    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-            //};
+            // endpoints
+            app.MapGet("/api/customers", () =>
+            {
+                var customer = new
+                {
+                    Id = 1,
+                    Name = "Cliente 1",
+                    Email = "cliente1@desafio.com",
+                    Phone = "123-456-7890"
+                };
+                return Results.Ok(customer);
+            });
 
-            //app.MapGet("/weatherforecast", (HttpContext httpContext) =>
-            //{
-            //    var forecast = Enumerable.Range(1, 5).Select(index =>
-            //        new WeatherForecast
-            //        {
-            //            Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            //            TemperatureC = Random.Shared.Next(-20, 55),
-            //            Summary = summaries[Random.Shared.Next(summaries.Length)]
-            //        })
-            //        .ToArray();
-            //    return forecast;
-            //})
-            //.WithName("GetWeatherForecast")
-            //.WithOpenApi();
+            app.MapGet("/api/products", async (IMediator _mediator) =>
+            {
+                var products = await _mediator.Send(new GetProductsQuery());
+                return products != null ? Results.Ok(products) : Results.NotFound();
+            }).WithName("GetProducts")
+            .WithOpenApi();
+
+
+            app.MapPost("/api/products", async (Product newProduct, IProductService productService) =>
+            {
+                var createdProduct = await productService.CreateProductAsync(newProduct);
+                return Results.Created($"/api/products/{createdProduct.Id}", createdProduct);
+            }).WithName("CreateProduct")
+            .WithOpenApi();
+
+            app.MapGet("/api/products/{id:int}", async (int id, IProductService productService) =>
+            {
+                var product = await productService.GetProductByIdAsync(id);
+                return product is not null ? Results.Ok(product) : Results.NotFound();
+            }).WithName("GetProductById")
+            .WithOpenApi();
+
+
+            app.MapGet("/api/orders", async (IOrderService orderService) =>
+            {
+                var orders = await orderService.GetAllOrdersAsync();
+                return Results.Ok(orders);
+            });
+
+            app.MapPost("/api/orders", async (Order newOrder, IOrderService orderService) =>
+            {
+                var createdOrder = await orderService.CreateOrderAsync(newOrder);
+                return Results.Created($"/api/orders/{createdOrder.Id}", createdOrder);
+            });
+
+            app.MapGet("/api/orders/{id:int}", async (int id, IOrderService orderService) =>
+            {
+                var order = await orderService.GetOrderByIdAsync(id);
+                return order is not null ? Results.Ok(order) : Results.NotFound();
+            });
 
             app.MapFallbackToFile("/index.html");
 
