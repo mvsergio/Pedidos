@@ -1,8 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using MongoDB.Driver;
-using Pedidos.Server.Application.CQRS.EventHandler;
-using Pedidos.Server.Application.CQRS.NoSQL.Handles;
 using Pedidos.Server.Application.CQRS.SQL.Handlers;
 using Pedidos.Server.Application.Service;
 using Pedidos.Server.Infra.Data;
@@ -27,8 +23,6 @@ namespace Pedidos.Server
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
             // MongoDB
-            // builder.Services.AddSingleton<IMongoClient, MongoClient>(s => new MongoClient(builder.Configuration.GetConnectionString("MongoDb")));
-
             builder.Services.AddSingleton<IMongoDbContext, MongoDbContext>();
             builder.Services.AddScoped<IMongoOrderRepository, MongoOrderRepository>();
 
@@ -38,15 +32,9 @@ namespace Pedidos.Server
 
             builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(Program).Assembly));
 
-            // CQRS - sql
+            // CQRS 
             builder.Services.AddScoped<CreateOrderCommandHandler>();
             builder.Services.AddScoped<GetAllOrdersQueryHandler>();
-
-            // CQRS - nosql
-            builder.Services.AddScoped<SyncOrderToMongoCommandHandler>();
-            builder.Services.AddScoped<GetOrdersFromMongoQueryHandler>();
-            builder.Services.AddScoped<GetOrderByIdFromMongoQueryHandler>();
-
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
             var app = builder.Build();

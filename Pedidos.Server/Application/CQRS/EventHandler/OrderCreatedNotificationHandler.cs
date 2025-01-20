@@ -27,8 +27,6 @@ namespace Pedidos.Server.Application.CQRS.EventHandler
             };
 
             await _mongoCollection.InsertOneAsync(order, cancellationToken: cancellationToken);
-
-            Console.WriteLine($"Order {notification.OrderId} synchronized with MongoDB.");
         }
     }
 }

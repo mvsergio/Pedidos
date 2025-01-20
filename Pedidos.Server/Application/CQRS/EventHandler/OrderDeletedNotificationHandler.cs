@@ -6,14 +6,9 @@ using Pedidos.Server.Infra.Repositories.MongoDB;
 
 namespace Pedidos.Server.Application.CQRS.EventHandler
 {
-    public class OrderDeleteddNotificationHandler : INotificationHandler<OrderDeletedNotification>
+    public class OrderDeleteddNotificationHandler(IMongoOrderRepository mongoOrderRepository) : INotificationHandler<OrderDeletedNotification>
     {
-        private readonly IMongoOrderRepository _mongoOrderRepository;
-
-        public OrderDeleteddNotificationHandler(IMongoOrderRepository mongoOrderRepository)
-        {
-            IMongoOrderRepository _mongoOrderRepository;
-        }
+        private readonly IMongoOrderRepository _mongoOrderRepository = mongoOrderRepository;
 
         public async Task Handle(OrderDeletedNotification notification, CancellationToken cancellationToken)
         {

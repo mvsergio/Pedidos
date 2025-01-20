@@ -4,16 +4,10 @@ using Pedidos.Server.Infra.Repositories.SqlServer;
 
 namespace Pedidos.Server.Application.Service
 {
-    public class OrderService : IOrderService
+    public class OrderService(IOrderRepository orderRepository, IMongoOrderRepository mongoOrderRepository) : IOrderService
     {
-        private readonly IOrderRepository _orderRepository;
-        private readonly IMongoOrderRepository _mongoOrderRepository;
-
-        public OrderService(IOrderRepository orderRepository, IMongoOrderRepository mongoOrderRepository)
-        {
-            _orderRepository = orderRepository;
-            _mongoOrderRepository = mongoOrderRepository;
-        }
+        private readonly IOrderRepository _orderRepository = orderRepository;
+        private readonly IMongoOrderRepository _mongoOrderRepository = mongoOrderRepository;
 
         public async Task<List<Order>> GetAllOrdersAsync()
         {

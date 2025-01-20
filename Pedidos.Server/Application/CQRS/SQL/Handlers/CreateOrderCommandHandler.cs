@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Pedidos.Server.Application.CQRS.Notification;
 using Pedidos.Server.Application.CQRS.SQL.Commands;
 using Pedidos.Server.Domain.Entities;
