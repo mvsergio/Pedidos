@@ -1,17 +1,15 @@
-﻿using MongoDB.Driver;
+﻿using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
 using Pedidos.Server.Domain.Entities;
+using Pedidos.Server.Domain.Events;
 using Pedidos.Server.Infra.Data;
+using Pedidos.Server.Infra.Data.MongoDB;
 
 namespace Pedidos.Server.Infra.Repositories.MongoDB
 {
-    public class MongoOrderRepository : IMongoOrderRepository
+    public class MongoOrderRepository(IMongoDbContext mongoDbContext) : IMongoOrderRepository
     {
-        private readonly IMongoCollection<Order> _orderCollection;
-
-        public MongoOrderRepository(IMongoDbContext mongoDbContext)
-        {
-            _orderCollection = mongoDbContext.GetCollection<Order>("Orders");
-        }
+        private readonly IMongoCollection<Order> _orderCollection = mongoDbContext.GetCollection<Order>("Orders");
 
         public async Task<List<Order>> GetOrdersAsync()
         {
@@ -34,6 +32,13 @@ namespace Pedidos.Server.Infra.Repositories.MongoDB
             {
                 await _orderCollection.ReplaceOneAsync(o => o.Id == order.Id, order);
             }
+        }
+
+        public async Task DeleteOrderAsync(int id)
+        {
+            var existingOrder = await _orderCollection.Find(o => o.Id == id).FirstOrDefaultAsync();
+            if (existingOrder != null)
+                await _orderCollection.DeleteOneAsync(o => o.Id == id);
         }
     }
 }

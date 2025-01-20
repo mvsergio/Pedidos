@@ -7,5 +7,6 @@ namespace Pedidos.Server.Infra.Repositories.MongoDB
         Task<List<Order>> GetOrdersAsync();
         Task<Order?> GetOrderByIdAsync(int id);
         Task SaveOrderAsync(Order order);
+        Task DeleteOrderAsync(int id);
     }
 }

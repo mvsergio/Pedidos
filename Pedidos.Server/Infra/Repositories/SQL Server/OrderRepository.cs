@@ -1,21 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Pedidos.Server.Application.CQRS.EventHandler;
 using Pedidos.Server.Domain.Entities;
-using Pedidos.Server.Domain.Events;
 using Pedidos.Server.Infra.Data;
 
 namespace Pedidos.Server.Infra.Repositories.SqlServer
 {
-    public class OrderRepository(ApplicationDbContext context,
-        OrderCreatedEventHandler orderCreatedEventHandler,
-        OrderUpdatedEventHandler orderUpdatedEventHandler,
-        OrderDeletedEventHandler orderDeletedEventHandler
-            ) : IOrderRepository
+    public class OrderRepository(ApplicationDbContext context) : IOrderRepository
     {
         private readonly ApplicationDbContext _context = context;
-        private readonly OrderCreatedEventHandler _orderCreatedEventHandler = orderCreatedEventHandler;
-        private readonly OrderUpdatedEventHandler _orderUpdatedEventHandler = orderUpdatedEventHandler;
-        private readonly OrderDeletedEventHandler _orderDeletedEventHandler = orderDeletedEventHandler;
 
         public async Task<List<Order>> GetAllAsync()
         {
@@ -36,9 +27,6 @@ namespace Pedidos.Server.Infra.Repositories.SqlServer
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
 
-            // Trigger event for synchronization
-            await _orderCreatedEventHandler.Handle(order);
-
             return order;
         }
 
@@ -47,10 +35,6 @@ namespace Pedidos.Server.Infra.Repositories.SqlServer
         {
             _context.Orders.Update(order);
             await _context.SaveChangesAsync();
-
-            // Trigger the update event
-            var orderUpdatedEvent = new OrderUpdatedEvent(order.Id);
-            await _orderUpdatedEventHandler.Handle(orderUpdatedEvent);
 
             return order;
         }
@@ -62,10 +46,6 @@ namespace Pedidos.Server.Infra.Repositories.SqlServer
             {
                 _context.Orders.Remove(order);
                 await _context.SaveChangesAsync();
-
-                // Trigger the delete event
-                var orderDeletedEvent = new OrderDeletedEvent(id);
-                await _orderDeletedEventHandler.Handle(orderDeletedEvent);
             }
         }
     }

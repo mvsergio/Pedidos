@@ -47,10 +47,6 @@ namespace Pedidos.Server
             builder.Services.AddScoped<GetOrdersFromMongoQueryHandler>();
             builder.Services.AddScoped<GetOrderByIdFromMongoQueryHandler>();
 
-            // Event Handler CQRS Sql X NoSQL
-            builder.Services.AddScoped<OrderCreatedEventHandler>();
-            builder.Services.AddScoped<OrderUpdatedEventHandler>();
-            builder.Services.AddScoped<OrderDeletedEventHandler>();
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
             var app = builder.Build();
