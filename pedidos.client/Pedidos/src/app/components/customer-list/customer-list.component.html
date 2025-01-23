@@ -1,10 +1,10 @@
-<div *ngIf="error" class="error">{{ error }}</div>
+<div *ngIf="error" class="alert alert-danger">{{ error }}</div>
 
 <div *ngIf="customers.length > 0; else noCustomers">
-  <h2>Lista de Clientes</h2>
-  <ul>
-    <li *ngFor="let customer of customers">
-      <h3>{{ customer.name }}</h3>
+  <h3>Lista de Clientes</h3>
+  <ul class="list-group">
+    <li *ngFor="let customer of customers" class="list-group-item">
+      <p>{{ customer.name }}</p>
       <p>Email: {{ customer.email }}</p>
       <p>Telefone: {{ customer.phone }}</p>
     </li>

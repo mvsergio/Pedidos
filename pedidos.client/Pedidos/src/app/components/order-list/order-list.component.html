@@ -1,0 +1,22 @@
+<div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+<div *ngIf="orders.length > 0; else noOrders">
+  <h3>Lista de Vendas</h3>
+
+  <ul class="list-group">
+    <li *ngFor="let order of orders" class="list-group-item">
+      <p>Pedido #{{ order.id }}</p>
+      <p>Status: {{ order.status }}</p>
+      <p>Total: {{ order.totalAmount }}</p>
+      <ul class="list-group">
+        <li *ngFor="let item of order.items" class="list-group-item">
+          {{ item.productName }} - {{ item.quantity }} x {{ item.unitPrice }} = {{ item.totalPrice }}
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+
+<ng-template #noOrders>
+  <p>Nenhuma venda encontrada.</p>
+</ng-template>
