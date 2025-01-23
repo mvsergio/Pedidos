@@ -18,6 +18,17 @@ public static class IServiceCollectionExtensions
 {
     public static IServiceCollection ResolveDependencies(this IServiceCollection services)
     {
+        // cors
+        services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(builder => {
+                builder
+                .WithOrigins("http://localhost:4200", "https://localhost:7146")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+            });
+        });
+
         // Adquirindo o Configuration
         var provider = services.BuildServiceProvider();
         var configuration = provider.GetRequiredService<IConfiguration>();

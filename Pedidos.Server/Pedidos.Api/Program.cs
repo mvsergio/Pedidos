@@ -17,6 +17,7 @@ namespace Pedidos.Api
 			builder.Services.ResolveDependencies();
 
 			var app = builder.Build();
+
 			ConfigureMiddleware(app);
 			ConfigureEndpoints(app);
 
@@ -35,8 +36,11 @@ namespace Pedidos.Api
                 app.UseDeveloperExceptionPage();
             }
 
-			app.MigrateDatabase();
+            app.MigrateDatabase();
 			app.UseHttpsRedirection();
+
+            app.UseCors();
+
             app.UseAuthorization();
             app.MapControllers();
         }
@@ -45,14 +49,17 @@ namespace Pedidos.Api
         {
             app.MapGet("/api/customers", () =>
             {
-                var customer = new
+                var customers = new List<Customer>();
+                var customer = new Customer()   
                 {
                     Id = 1,
                     Name = "Cliente 1",
                     Email = "cliente1@desafio.com",
                     Phone = "123-456-7890"
                 };
-                return Results.Ok(customer);
+                customers.Add(customer);
+
+                return Results.Ok(customers);
             });
 
             app.MapGet("/api/products", async (IMediator mediator) =>
