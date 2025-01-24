@@ -1,0 +1,33 @@
+<form [formGroup]="productForm" (ngSubmit)="submitForm()">
+  <div class="mb-3">
+    <label for="name" class="form-label">Nome do Produto</label>
+    <input
+      id="name"
+      type="text"
+      class="form-control"
+      formControlName="name"
+      placeholder="Digite o nome do produto"
+    />
+    <div *ngIf="productForm.get('name')?.invalid && productForm.get('name')?.touched" class="text-danger">
+      <div *ngIf="productForm.get('name')?.errors?.['required']">O nome é obrigatório.</div>
+      <div *ngIf="productForm.get('name')?.errors?.['minlength']">O nome deve ter pelo menos 3 caracteres.</div>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label for="price" class="form-label">Preço</label>
+    <input
+      id="price"
+      type="number"
+      class="form-control"
+      formControlName="price"
+      placeholder="Digite o preço do produto"
+    />
+    <div *ngIf="productForm.get('price')?.invalid && productForm.get('price')?.touched" class="text-danger">
+      <div *ngIf="productForm.get('price')?.errors?.['required']">O preço é obrigatório.</div>
+      <div *ngIf="productForm.get('price')?.errors?.['min']">O preço deve ser maior que 0.</div>
+    </div>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Criar Produto</button>
+</form>

@@ -34,6 +34,26 @@ import { RouterModule } from '@angular/router';
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
+                Produtos
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="productsDropdown">
+                <li>
+                  <a class="dropdown-item" routerLink="/products" routerLinkActive="active">Lista de Produtos</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" routerLink="/products/new" routerLinkActive="active">Novo Produto</a>
+                </li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="ordersDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
                 Vendas
               </a>
               <ul class="dropdown-menu" aria-labelledby="ordersDropdown">
