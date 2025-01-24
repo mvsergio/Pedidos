@@ -1,0 +1,112 @@
+<div class="container mt-5">
+  <h2 class="mb-4">Cadastro de Pedido</h2>
+
+  <form [formGroup]="orderForm" (ngSubmit)="submitForm()">
+    <div class="mb-3">
+      <label for="customerId" class="form-label">ID do Cliente</label>
+      <input
+        type="number"
+        id="customerId"
+        formControlName="customerId"
+        class="form-control"
+      />
+      <div *ngIf="orderForm.get('customerId')?.invalid && orderForm.get('customerId')?.touched" class="text-danger">
+        O ID do cliente é obrigatório.
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="orderDate" class="form-label">Data do Pedido</label>
+      <input
+        type="datetime-local"
+        id="orderDate"
+        formControlName="orderDate"
+        class="form-control"
+      />
+      <div *ngIf="orderForm.get('orderDate')?.invalid && orderForm.get('orderDate')?.touched" class="text-danger">
+        A data do pedido é obrigatória.
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="status" class="form-label">Status</label>
+      <select id="status" formControlName="status" class="form-control">
+        <option value="Pending">Pendente</option>
+        <option value="Completed">Concluído</option>
+        <option value="Canceled">Cancelado</option>
+      </select>
+    </div>
+
+    <h3 class="mt-4">Itens do Pedido</h3>
+
+    <div formArrayName="items">
+      <div
+        class="card mb-3"
+        *ngFor="let item of items.controls; let i = index"
+        [formGroupName]="i"
+      >
+        <div class="card-body">
+          <div class="mb-3">
+            <label for="productId-{{ i }}" class="form-label">ID do Produto</label>
+            <input
+              type="number"
+              id="productId-{{ i }}"
+              formControlName="productId"
+              class="form-control"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="productName-{{ i }}" class="form-label">Nome do Produto</label>
+            <input
+              type="text"
+              id="productName-{{ i }}"
+              formControlName="productName"
+              class="form-control"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="quantity-{{ i }}" class="form-label">Quantidade</label>
+            <input
+              type="number"
+              id="quantity-{{ i }}"
+              formControlName="quantity"
+              class="form-control"
+              (input)="calculateTotalAmount()"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="unitPrice-{{ i }}" class="form-label">Preço Unitário</label>
+            <input
+              type="number"
+              id="unitPrice-{{ i }}"
+              formControlName="unitPrice"
+              class="form-control"
+              (input)="calculateTotalAmount()"
+            />
+          </div>
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="removeItem(i)"
+          >
+            Remover Item
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <button
+      type="button"
+      class="btn btn-primary mt-3"
+      (click)="addItem()"
+    >
+      Adicionar Item
+    </button>
+
+    <div class="mt-4">
+      <strong>Total:</strong> {{ orderForm.value.totalAmount  }}
+    </div>
+
+    <button type="submit" class="btn btn-success mt-3">Enviar Pedido</button>
+  </form>
+</div>

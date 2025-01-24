@@ -25,8 +25,25 @@ import { RouterModule } from '@angular/router';
             <li class="nav-item">
               <a class="nav-link" routerLink="/customers" routerLinkActive="active">Clientes</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/orders" routerLinkActive="active">Vendas</a>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="ordersDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Vendas
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="ordersDropdown">
+                <li>
+                  <a class="dropdown-item" routerLink="/orders" routerLinkActive="active">Lista de Vendas</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" routerLink="/orders/new" routerLinkActive="active">Novo Pedido</a>
+                </li>
+              </ul>
             </li>
           </ul>
         </div>
