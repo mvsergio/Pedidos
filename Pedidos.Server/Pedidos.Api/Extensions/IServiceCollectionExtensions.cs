@@ -48,9 +48,13 @@ public static class IServiceCollectionExtensions
 
         // Handlers CQRS
         services.AddScoped<CreateOrderCommandHandler>();
-        services.AddScoped<CreateProductCommandHandler>();
+        services.AddScoped<DeleteOrderCommandHandler>();
         services.AddScoped<GetOrdersQueryHandler>();
+
+        services.AddScoped<CreateProductCommandHandler>();
+        services.AddScoped<DeleteProductCommandHandler>();
         services.AddScoped<GetProductsQueryHandler>();
+
         services.AddScoped<OrderCreatedNotificationHandler>();
         services.AddScoped<ProductCreatedNotificationHandler>();
         services.AddScoped<OrderDeletedNotificationHandler>();
@@ -68,7 +72,12 @@ public static class IServiceCollectionExtensions
 
         // Registro do IRequestHandlers
         services.AddTransient<IRequestHandler<CreateOrderCommand, Order>, CreateOrderCommandHandler>();
+        services.AddTransient<IRequestHandler<DeleteOrderCommand, bool>, DeleteOrderCommandHandler>();
+
+
         services.AddTransient<IRequestHandler<CreateProductCommand, Product>, CreateProductCommandHandler>();
+        services.AddTransient<IRequestHandler<DeleteProductCommand, bool>, DeleteProductCommandHandler>();
+
         services.AddTransient<IRequestHandler<GetOrdersQuery, List<Order>>, GetOrdersQueryHandler>();
         services.AddTransient<IRequestHandler<GetProductsQuery, List<Product>>, GetProductsQueryHandler>();
         services.AddTransient<IRequestHandler<GetOrderByIdQuery, Order?>, GetOrderByIdQueryHandler>();
@@ -76,6 +85,8 @@ public static class IServiceCollectionExtensions
 
         services.AddScoped<INotificationHandler<OrderCreatedNotification>, OrderCreatedNotificationHandler>();
         services.AddScoped<INotificationHandler<ProductCreatedNotification>, ProductCreatedNotificationHandler>();
+        services.AddScoped<INotificationHandler<OrderDeletedNotification>, OrderDeletedNotificationHandler>();
+        services.AddScoped<INotificationHandler<ProductDeletedNotification>, ProductDeletedNotificationHandler>();
 
         return services;
     }

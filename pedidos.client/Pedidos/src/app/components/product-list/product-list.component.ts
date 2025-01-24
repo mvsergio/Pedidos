@@ -16,6 +16,7 @@ import { CommonModule } from '@angular/common';
             <th>ID</th>
             <th>Nome</th>
             <th>Preço</th>
+            <th>Ações</th>
           </tr>
         </thead>
         <tbody>
@@ -23,6 +24,14 @@ import { CommonModule } from '@angular/common';
             <td>{{ product.id }}</td>
             <td>{{ product.name }}</td>
             <td>{{ product.price | currency: 'BRL' }}</td>
+            <td>
+              <button
+                class="btn btn-danger btn-sm"
+                (click)="deleteProduct(product.id)"
+              >
+                Excluir
+              </button>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -38,6 +47,10 @@ export class ProductListComponent implements OnInit {
   constructor(private productService: ProductService) {}
 
   ngOnInit(): void {
+    this.loadProducts();
+  }
+
+  loadProducts(): void {
     this.productService.getProducts().subscribe({
       next: (data) => {
         this.products = data;
@@ -46,5 +59,19 @@ export class ProductListComponent implements OnInit {
         alert('Erro ao buscar produtos: ' + err.message);
       },
     });
+  }
+
+  deleteProduct(id: number): void {
+    if (confirm('Tem certeza que deseja excluir este produto?')) {
+      this.productService.deleteProduct(id).subscribe({
+        next: () => {
+          alert('Produto excluído com sucesso!');
+          this.loadProducts(); // Atualiza a lista após a exclusão
+        },
+        error: (err) => {
+          alert('Erro ao excluir o produto: ' + err.message);
+        },
+      });
+    }
   }
 }

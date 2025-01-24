@@ -66,21 +66,25 @@ namespace Pedidos.Api
             {
                 var products = await mediator.Send(new GetProductsQuery());
                 return products != null ? Results.Ok(products) : Results.NotFound();
-            }).WithName("GetProducts").WithOpenApi();
+            });
 
             app.MapPost("/api/products", async (Product newProduct, IMediator mediator) =>
             {
                 var createdProduct = await mediator.Send(new CreateProductCommand(newProduct));
                 return Results.Created($"/api/products/{createdProduct.Id}", createdProduct);
-            }).WithName("CreateProduct")
-            .WithOpenApi();
+            });
 
             app.MapGet("/api/products/{id:int}", async (int id, IMediator mediator) =>
             {
                 var product = await mediator.Send(new GetProductByIdQuery(id));
                 return product is not null ? Results.Ok(product) : Results.NotFound();
-            }).WithName("GetProductById")
-            .WithOpenApi();
+            });
+
+            app.MapDelete("/api/products/{id:int}", async (int id, IMediator mediator) =>
+            {
+                var status = await mediator.Send(new DeleteProductCommand(id));
+                return status ? Results.Ok() : Results.NotFound();
+            });
 
             app.MapGet("/api/orders", async (IMediator mediator) =>
             {
